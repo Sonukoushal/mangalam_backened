@@ -2,10 +2,30 @@ from rest_framework.views import APIView  # GET, POST, PUT, DELETE jaise methods
 from rest_framework.response import Response 
 from rest_framework import status  #status DRF ka module hai jisme predefined HTTP response codes diye hote hain.
 from .serializers import UserSerializer
-
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import UserManager , CustomUser
+from rest_framework.permissions import IsAuthenticated
+from .models import CustomUser
+from rest_framework.authentication import TokenAuthentication
+
+
+class PromoteSuperuser(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request,user_id):
+        if not request.user.is_superuser:
+            return Response({"error":"access deneid"},status=403)
+        
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+            return Response({"message": f"{user.email} is now a superuser"})
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
 
 class SignupView(APIView):
     def post(self,request):
