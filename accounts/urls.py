@@ -7,7 +7,7 @@ urlpatterns = [
     path("login/",LoginView.as_view()),
     path("logout/",LogoutView.as_view()),
     path("make-superuser/<int:user_id>/", PromoteSuperuser.as_view()),
-    path('api-token-auth/',obtain_auth_token)
+    path('api-token-auth/',obtain_auth_token) 
 ]
 
  

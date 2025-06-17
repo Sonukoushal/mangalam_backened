@@ -1,6 +1,6 @@
-from rest_framework.views import APIView  # GET, POST, PUT, DELETE jaise methods define kar sakte ho
+from rest_framework.views import APIView 
 from rest_framework.response import Response 
-from rest_framework import status  #status DRF ka module hai jisme predefined HTTP response codes diye hote hain.
+from rest_framework import status  
 from .serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
@@ -31,8 +31,8 @@ class SignupView(APIView):
     def post(self,request):
         serializer = UserSerializer(data=request.data)
 
-        if serializer.is_valid():
-            user = serializer.save() 
+        if serializer.is_valid():   #ye chalte hi validated_data me user ne jo data input diya hai vo aa jata hai 
+            user = serializer.save()  #yaha user(serializer vale) ne apne aap ko return kiya hai 
 
              # JWT Token Generate karo
             refresh = RefreshToken.for_user(user)
@@ -42,7 +42,7 @@ class SignupView(APIView):
             }
 
             return Response({
-                'msg': 'Signup successful ✅',
+                'msg': 'Signup successful ',
                 'user': serializer.data,
                 'token': token_data
             }, status=status.HTTP_201_CREATED)
@@ -82,8 +82,10 @@ class LogoutView(APIView):
             token = RefreshToken(refresh_token)
             token.blacklist()
 
-            return Response({'msg': 'Logout successful ✅'}, status=status.HTTP_205_RESET_CONTENT)
+            return Response({'msg': 'Logout successful '}, status=status.HTTP_205_RESET_CONTENT)
         
         except Exception as e:
             return Response({'error': 'Invalid or expired token'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    
 

@@ -10,7 +10,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    
+    #custom ka matlab sirf ye nahi ki hume user banana hai custom ka matlab  kuch extra logic (password hash,normalize email ,auto field fill, etc.)
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):
     email = models.EmailField(unique=True)
