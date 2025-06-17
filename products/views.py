@@ -6,35 +6,35 @@ from .serializers import MenuSerializer,CategorySerializer,ProductSerializer
 from rest_framework.permissions import IsAuthenticated
 from accounts.permissions import IsSuperUserReadOnly
 
-#Menu Button
-class MenuListCreateView(APIView):              #API inbuilt class hai or permission_classes predefined variable 
-     permission_classes=[IsAuthenticated,IsSuperUserReadOnly] #IsAuthenticated ➝ Ensure karta hai ki user login karke token pass kare
 
-     def get(self,request):#self ka matlab hota hai — "ve object jisne method call kiya hai
-          menus=Menu.objects.all()#menus ek variable hai jisme Menu jo ki models me ek table hai or  .objects.all() ek inbuilt query function hai jo aapke model ke table se sara data laata hai.
-          serializer = MenuSerializer(menus,many=True)#serializer ek variable(vese object hai kyuki class ka instance ban raha hai )(menus-object jisme Menu model ka sara data hai,many=True kyuki multiple items hai)
-          return Response(serializer.data)  #serializer vo object jisme .data(jo ki rest framework ki inbuilt property hai ) matlab sara data response me bheja jaa raha hai
+class MenuListCreateView(APIView):              
+     permission_classes=[IsAuthenticated,IsSuperUserReadOnly] 
+
+     def get(self,request):
+          menus=Menu.objects.all()
+          serializer = MenuSerializer(menus,many=True)
+          return Response(serializer.data)  
      
      def post(self,request):
-          serializer = MenuSerializer(data=request.data)#yaha data inbuilt parameter ha drf ka .data ka matlab sara data jo ki request se aya hai
-          if serializer.is_valid():  #.is_valid ye DRF ka inbuilt hai 
-               serializer.save() #.save bhi 
+          serializer = MenuSerializer(data=request.data)
+          if serializer.is_valid():  
+               serializer.save() 
                return Response(serializer.data,status=status.HTTP_201_CREATED)
           return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-     #Response DRF ka inbuilt function hai jo ki json  response deta hai
+     
 
 class MenuDetailView(APIView):
      permission_classes=[IsAuthenticated,IsSuperUserReadOnly]
 
      def get_object(self,pk):   
-          try:           #jaha koi hume condition di gayi ho vaha if or else ka use lekin jah sambhavna hai ki error aa sakti hai vaha try or except ka use 
-               return Menu.objects.get(pk=pk)#Menu naam ka model .object model ka manager hai jiske through hum database me query karte hai 
-          except Menu.DoesNotExist: #.get ek inbuilt method hai jo specific value return kart hai object method ko left pk=model ka field name right pk = argumrnt to parameter of function
+          try:           
+               return Menu.objects.get(pk=pk)
+          except Menu.DoesNotExist: 
                return None
           
      def get(self,request,pk):
-          menu = self.get_object(pk)#.get_object naam ka method call ho raha hai jisme pk id diya gaya hai or vo pk menu me save ho jayegi 
-          if not menu:  #not logical operator jo ki condition ko ulta kar deta hai true ya false me 
+          menu = self.get_object(pk)
+          if not menu:  
                return Response({"error": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
           serializer = MenuSerializer(menu)
           return Response(serializer.data)
@@ -63,22 +63,22 @@ class CategoryListCreateView(APIView):
      permission_classes=[IsAuthenticated,IsSuperUserReadOnly]
 
      def get(self,request):
-          menu_id = request.GET.get('menu') #request.GET → ek dictionary hoti hai jo URL ke query parameters ko hold karti hai.
-                                            #.get('menu') → us dictionary me se 'menu' key ka value nikalta hai.
+          menu_id = request.GET.get('menu') 
+                                            
 
-          if menu_id:                                                             #http://127.0.0.1:8000/categories/?menu=2
-              categories =  Category.objects.filter(menu__id=menu_id)              #?menu=2 → query parameter hai
-          else:                                                                     # menu → key hai
-               categories = Category.objects.all()                                    #2 → value hai
+          if menu_id:                                                            
+              categories =  Category.objects.filter(menu__id=menu_id)              
+          else:                                                                     
+               categories = Category.objects.all()                                    
                                                
           serializer = CategorySerializer(categories,many=True) 
           return Response(serializer.data)
      
      def post(self,request):
-          serializer= CategorySerializer(data=request.data)  #request.data postman/frontend se aya hua data
+          serializer= CategorySerializer(data=request.data)  
           if serializer.is_valid():
                serializer.save()
-               return Response(serializer.data, status=status.HTTP_201_CREATED)  #serializer.data = Clean, validated output data to frontened
+               return Response(serializer.data, status=status.HTTP_201_CREATED)  
           return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
      
 class CategoryDetailView(APIView):
