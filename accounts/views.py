@@ -31,8 +31,8 @@ class SignupView(APIView):
     def post(self,request):
         serializer = UserSerializer(data=request.data)
 
-        if serializer.is_valid():   #ye chalte hi validated_data me user ne jo data input diya hai vo aa jata hai 
-            user = serializer.save()  #yaha user(serializer vale) ne apne aap ko return kiya hai 
+        if serializer.is_valid():   
+            user = serializer.save()  
 
              # JWT Token Generate karo
             refresh = RefreshToken.for_user(user)

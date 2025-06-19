@@ -10,7 +10,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ['id','name','categories'] #Yahan related_name='categories' ke through, ek menu ki saari category mil rahi hain(jo ki models.py me likha hua hai )
+        fields = ['id','name','categories'] 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
